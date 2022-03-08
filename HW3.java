@@ -1,9 +1,30 @@
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class HW3 {
     public static void main(String[] args) {
-        int[] x = { 2, 7, 2, 3, 1, 5, 6 };
-        System.out.println(twoSumCount(x, 7));
+        Scanner s = null;
+        try {
+            s = new Scanner(new File("input-2.4.txt"));
+        } catch (IOException ioe) {
+            System.out.println("Error: " + ioe);
+        }
+
+        int n = s.nextInt();
+        int target = s.nextInt();
+        int[] input = new int[n];
+
+        int i = 0;
+        while (s.hasNextInt()) {
+            input[i] = s.nextInt();
+            i++;
+        }
+
+        s.close();
+
+        System.out.println(twoSumCount(input, target));
     }
 
     // O(nlogn) time | O(1) space
