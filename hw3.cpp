@@ -1,13 +1,15 @@
 #include <iostream>
 #include <fstream>
 #include <algorithm>
+#include <vector>
 
 using namespace std;
 
 int twoSumCount(int[], int, int);
+int mostCommonTarget(int[], int);
 
 int main() {
-  ifstream inFile("input-2.3.txt");
+  ifstream inFile("input-2.4.txt");
   int n;
   int target;
   inFile >> n;
@@ -18,11 +20,12 @@ int main() {
   while (inFile >> input[i])
     i++;
 
-  cout << twoSumCount(input, n, target) << endl;
+  cout << mostCommonTarget(input, n) << endl;
 
   return 0;
 }
 
+// Counts the number of pairs that add up to target
 // O(nlogn) time | O(1) space
 int twoSumCount(int arr[], int n, int target) {
     sort(arr, arr + n); // O(nlogn) time
@@ -53,5 +56,41 @@ int twoSumCount(int arr[], int n, int target) {
             numPairs += leftCount * rightCount;
         }
     }
+
     return numPairs;
+}
+
+// Finds the most common target among all pairs of numbers
+// O(n^2*logn) time | O(n^2) space
+int mostCommonTarget(int arr[], int n) {
+    vector<int> sums; // O(n^2) space
+    int idx = 0;
+
+    // TO DO: space optimization - skip duplicate sums
+    // store all possible sums - O(n^2) time | O(n^2) space
+    for (int i = 0; i < n; i++) {
+        for (int j = i + 1; j < n; j++) {
+            int currentSum = arr[i] + arr[j];
+            sums.push_back(currentSum);
+        }
+    }
+
+    int target;
+    int maxCount = 0;
+    // O(n^2*logn) time | O(1) space
+    for (int i = 0; i<sums.size(); i++) { // O(n) time | O(1) space
+        int currentSum = sums[i];
+        int currentCount = twoSumCount(arr, n, currentSum); // O(nlogn) time | O(1) space
+
+        if (currentCount >= maxCount) {
+            if (currentCount == maxCount) {
+                target = min(currentSum, target);
+            } else {
+                target = currentSum;
+                maxCount = currentCount;
+            }
+        }
+    }
+
+    return target;
 }
