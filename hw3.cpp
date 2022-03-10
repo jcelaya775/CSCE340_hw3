@@ -9,7 +9,7 @@ int twoSumCount(int[], int, int);
 int mostCommonTarget(int[], int);
 
 int main() {
-  ifstream inFile("input-2.4.txt");
+  ifstream inFile("input-2.1.txt");
   int n;
   int target;
   inFile >> n;
@@ -35,12 +35,19 @@ int twoSumCount(int arr[], int n, int target) {
     while (left < right) { // O(n) time
         int sum = arr[left] + arr[right];
 
-        if (sum < target)
+        if (sum < target) {
+            while (left < right && arr[left + 1] == arr[left]) // skip duplicates
+                left++;
             left++;
-        else if (sum > target)
+        }
+        else if (sum > target) {
+            while (left < right && arr[right - 1] == arr[right]) // skip duplicates
+                right--;
             right--;
+        }
         else { // sum equals target
             int leftCount = 1, rightCount = 1;
+
             while (left < right && arr[left + 1] == arr[left]) { // count duplicates on left side
                 leftCount++;
                 left++;
@@ -66,13 +73,21 @@ int mostCommonTarget(int arr[], int n) {
     vector<int> sums; // O(n^2) space
     int idx = 0;
 
-    // TO DO: space optimization - skip duplicate sums
     // store all possible sums - O(n^2) time | O(n^2) space
-    for (int i = 0; i < n; i++) {
-        for (int j = i + 1; j < n; j++) {
+    int i = 0;
+    while (i < n) {
+        int j = i + 1;
+        while (j < n) {
             int currentSum = arr[i] + arr[j];
-            sums.push_back(currentSum);
+
+            while (arr[j + 1] == arr[j]) // move past duplicates
+                j++;
+            j++;
         }
+
+        while (arr[i + 1] == arr[i]) // move past duplicates
+            i++;
+        i++;
     }
 
     int target;
