@@ -9,20 +9,24 @@ int twoSumCount(int[], int, int);
 int mostCommonTarget(int[], int);
 
 int main() {
-  ifstream inFile("input-2.1.txt");
-  int n;
-  int target;
-  inFile >> n;
-  inFile >> target;
-  int input[n];
+    ifstream inFile("input-3.2.txt");
+    if (inFile.is_open()) {
+        int n;
+        int target;
+        inFile >> n;
+        // inFile >> target;
+        int input[n];
+        
+        int i = 0;
+        while (inFile >> input[i])
+            i++;
 
-  int i = 0;
-  while (inFile >> input[i])
-    i++;
+        cout << mostCommonTarget(input, n) << endl;
+    } else {
+        cout << "Error opening file..." << endl;
+    }
 
-  cout << mostCommonTarget(input, n) << endl;
-
-  return 0;
+    return 0;
 }
 
 // Counts the number of pairs that add up to target
@@ -79,13 +83,14 @@ int mostCommonTarget(int arr[], int n) {
         int j = i + 1;
         while (j < n) {
             int currentSum = arr[i] + arr[j];
+            sums.push_back(currentSum);
 
-            while (arr[j + 1] == arr[j]) // move past duplicates
+            while (j < (n - 1) && arr[j + 1] == arr[j]) // move past duplicates
                 j++;
             j++;
         }
 
-        while (arr[i + 1] == arr[i]) // move past duplicates
+        while (i < (n - 1) && arr[i + 1] == arr[i]) // move past duplicates
             i++;
         i++;
     }

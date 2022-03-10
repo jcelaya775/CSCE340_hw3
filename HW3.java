@@ -36,11 +36,15 @@ public class HW3 {
         while (left < right) { // O(n) time
             int sum = arr[left] + arr[right];
 
-            if (sum < target)
+            if (sum < target) {
+                while (left < right && arr[left + 1] == arr[left]) // move past duplicates on left side
+                    left++;
                 left++;
-            else if (sum > target)
+            } else if (sum > target) {
+                while (left < right && arr[right - 1] == arr[right]) // move past duplicates on right side
+                    right--;
                 right--;
-            else { // sum equals target
+            } else { // sum equals target
                 int leftCount = 1, rightCount = 1;
 
                 while (left < right && arr[left + 1] == arr[left]) { // count duplicates on left side
