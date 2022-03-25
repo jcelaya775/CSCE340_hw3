@@ -1,27 +1,45 @@
 #include <iostream>
 #include <fstream>
+#include <string>
 #include <algorithm>
 #include <vector>
 
 using namespace std;
 
-int twoSumCount(int[], int, int);
-int mostCommonTarget(int[], int);
+int getPairSumCount(int[], int, int);
+int getMostCommonTarget(int[], int);
 
 int main() {
-    ifstream inFile("input-3.2.txt");
+    int task;
+    cout << "Would you like to perform task 2 or task 3 (enter 2 or 3): ";
+    cin >> task;
+    
+    string input;
+    cout << "Enter file name to read from: ";
+    cin >> input;
+    
+    ifstream inFile(input);
+    // read input
     if (inFile.is_open()) {
         int n;
         int target;
         inFile >> n;
-        // inFile >> target;
+        
+        if (task == 2)
+            inFile >> target;
+
         int input[n];
         
         int i = 0;
         while (inFile >> input[i])
             i++;
 
-        cout << mostCommonTarget(input, n) << endl;
+        if (task == 2)
+            cout << "\nanswer = " << getPairSumCount(input, n, target) << endl;
+        else if (task == 3)
+            cout << "\nanswer = " << getMostCommonTarget(input, n) << endl;
+        else
+            cout << "Invalid task '" << task << "' Please try again." << endl;
     } else {
         cout << "Error opening file..." << endl;
     }
@@ -31,26 +49,23 @@ int main() {
 
 // Counts the number of pairs that add up to target
 // O(nlogn) time | O(1) space
-int twoSumCount(int arr[], int n, int target) {
+int getPairSumCount(int arr[], int n, int target) {
     sort(arr, arr + n); // O(nlogn) time
 
-    int numPairs = 0;
-    int left = 0, right = n - 1;
-    while (left < right) { // O(n) time
-        int sum = arr[left] + arr[right];
+    int numPairs = 0; // number of pairs that add up to target
+    int left = 0, right = n - 1; // left and right indexes
 
-        if (sum < target) {
-            while (left < right && arr[left + 1] == arr[left]) // skip duplicates
-                left++;
+    // start left and right indexes at the oustide (both ends of the sorted array), and move them inside towards each other
+    // increment numPairs whenever a correct pair is found
+    while (left < right) { // O(n) time
+        int sum = arr[left] + arr[right]; // current sum
+
+        if (sum < target) // sum is too small -> increase left index to increase sum
             left++;
-        }
-        else if (sum > target) {
-            while (left < right && arr[right - 1] == arr[right]) // skip duplicates
-                right--;
+        else if (sum > target) // sum is too large -> decrease right index to decrease sum
             right--;
-        }
         else { // sum equals target
-            int leftCount = 1, rightCount = 1;
+            int leftCount = 1, rightCount = 1; // number of duplicates on left and right side
 
             while (left < right && arr[left + 1] == arr[left]) { // count duplicates on left side
                 leftCount++;
@@ -64,7 +79,7 @@ int twoSumCount(int arr[], int n, int target) {
             }
             right--;
 
-            numPairs += leftCount * rightCount;
+            numPairs += leftCount * rightCount; // add number of correct pairs
         }
     }
 
@@ -73,9 +88,8 @@ int twoSumCount(int arr[], int n, int target) {
 
 // Finds the most common target among all pairs of numbers
 // O(n^2*logn) time | O(n^2) space
-int mostCommonTarget(int arr[], int n) {
+int getMostCommonTarget(int arr[], int n) {
     vector<int> sums; // O(n^2) space
-    int idx = 0;
 
     // store all possible sums - O(n^2) time | O(n^2) space
     int i = 0;
@@ -85,32 +99,32 @@ int mostCommonTarget(int arr[], int n) {
             int currentSum = arr[i] + arr[j];
             sums.push_back(currentSum);
 
-            while (j < (n - 1) && arr[j + 1] == arr[j]) // move past duplicates
+            while (j < (n - 1) && arr[j + 1] == arr[j]) // skip duplicates
                 j++;
             j++;
         }
 
-        while (i < (n - 1) && arr[i + 1] == arr[i]) // move past duplicates
+        while (i < (n - 1) && arr[i + 1] == arr[i]) // skip duplicates
             i++;
         i++;
     }
 
-    int target;
+    int mostCommonTarget;
     int maxCount = 0;
     // O(n^2*logn) time | O(1) space
     for (int i = 0; i<sums.size(); i++) { // O(n) time | O(1) space
         int currentSum = sums[i];
-        int currentCount = twoSumCount(arr, n, currentSum); // O(nlogn) time | O(1) space
+        int currentCount = getPairSumCount(arr, n, currentSum); // O(nlogn) time | O(1) space
 
         if (currentCount >= maxCount) {
             if (currentCount == maxCount) {
-                target = min(currentSum, target);
+                mostCommonTarget = min(currentSum, mostCommonTarget);
             } else {
-                target = currentSum;
+                mostCommonTarget = currentSum;
                 maxCount = currentCount;
             }
         }
     }
 
-    return target;
+    return mostCommonTarget;
 }
