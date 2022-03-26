@@ -28,7 +28,7 @@ int main() {
         if (task == 2)
             inFile >> target;
 
-        int input[n];
+        int *input = new int[n];
         
         int i = 0;
         while (inFile >> input[i])
@@ -40,6 +40,8 @@ int main() {
             cout << "\nanswer = " << getMostCommonTarget(input, n) << endl;
         else
             cout << "Invalid task '" << task << "' Please try again." << endl;
+        
+        delete [] input;
     } else {
         cout << "Error opening file..." << endl;
     }
