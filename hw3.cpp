@@ -2,7 +2,6 @@
 #include <fstream>
 #include <string>
 #include <algorithm>
-#include <vector>
 #include <unordered_set>
 
 using namespace std;
@@ -92,8 +91,7 @@ int getPairSumCount(int arr[], int n, int target) {
 // Finds the most common target among all pairs of numbers
 // O(n^2*logn) time | O(n^2) space
 int getMostCommonTarget(int arr[], int n) {
-    vector<int> sums; // O(n^2) space
-    unordered_set<int> storedSums;
+    unordered_set<int> sums; // O(n^2) space
 
     // store all possible sums - O(n^2) time | O(n^2) space
     int i = 0;
@@ -102,10 +100,8 @@ int getMostCommonTarget(int arr[], int n) {
         while (j < n) {
             int currentSum = arr[i] + arr[j];
 
-            if (storedSums.count(currentSum) == 0) {
-                sums.push_back(currentSum);
-                storedSums.insert(currentSum);
-            }
+            if (sums.count(currentSum) == 0)
+                sums.insert(currentSum);
 
             while (j < (n - 1) && arr[j + 1] == arr[j]) // skip duplicates
                 j++;
@@ -120,8 +116,8 @@ int getMostCommonTarget(int arr[], int n) {
     int mostCommonTarget;
     int maxCount = 0;
     // O(n^2*logn) time | O(1) space
-    for (int i = 0; i<sums.size(); i++) { // O(n) time | O(1) space
-        int currentSum = sums[i];
+    for (unordered_set<int>::iterator itr = sums.begin(); itr != sums.end(); ++itr) { // O(n) time | O(1) space
+        int currentSum = *itr;
         int currentCount = getPairSumCount(arr, n, currentSum); // O(nlogn) time | O(1) space
 
         if (currentCount >= maxCount) {
