@@ -3,6 +3,7 @@
 #include <string>
 #include <algorithm>
 #include <vector>
+#include <unordered_set>
 
 using namespace std;
 
@@ -92,6 +93,7 @@ int getPairSumCount(int arr[], int n, int target) {
 // O(n^2*logn) time | O(n^2) space
 int getMostCommonTarget(int arr[], int n) {
     vector<int> sums; // O(n^2) space
+    unordered_set<int> storedSums;
 
     // store all possible sums - O(n^2) time | O(n^2) space
     int i = 0;
@@ -99,7 +101,11 @@ int getMostCommonTarget(int arr[], int n) {
         int j = i + 1;
         while (j < n) {
             int currentSum = arr[i] + arr[j];
-            sums.push_back(currentSum);
+
+            if (storedSums.count(currentSum) == 0) {
+                sums.push_back(currentSum);
+                storedSums.insert(currentSum);
+            }
 
             while (j < (n - 1) && arr[j + 1] == arr[j]) // skip duplicates
                 j++;
